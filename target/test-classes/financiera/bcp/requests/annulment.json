@@ -1,9 +1,0 @@
-{
-  "rqUUID": "#(rqUUID)",
-  "operationDate": "#(operationDate)",
-  "operationNumber": "#(operationNumber)",
-  "operationNumberAnnulment": "#(operationNumber)",
-  "financialEntity": "002",
-  "channel": "PZ",
-  "customerId": "#(customerId)"
-}
