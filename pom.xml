@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================================
+  DECLARACIÓN XML (la línea de arriba)
+  ============================================================================
+  Qué es: la declaración XML, una instrucción que indica cómo leer el archivo.
+    - version="1.0": versión del estándar XML usada (la única usada en la
+      práctica).
+    - encoding="UTF-8": codificación de caracteres del archivo. UTF-8 permite
+      tildes, ñ y símbolos especiales sin que se corrompan.
+  Para qué sirve: le dice a Maven y a los editores cómo interpretar el texto,
+  sobre todo los caracteres con tilde de los comentarios.
+  Es opcional: sin ella Maven funciona igual, pero declararla deja explícita
+  la codificación.
+  Regla importante: debe ser la primera línea del archivo, sin espacios, líneas
+  en blanco ni comentarios antes. Si algo la precede, Maven falla con un error
+  de lectura del pom.
+
+  ============================================================================
+  pom.xml
+  ============================================================================
+  POM (Project Object Model): es la "ficha técnica" del proyecto. Maven, que es
+  la herramienta que construye proyectos Java (descarga librerías, compila y
+  ejecuta pruebas), lee este archivo para saber qué hacer.
+  El archivo está escrito en XML, un formato de texto con etiquetas del tipo
+  <etiqueta>valor</etiqueta>.
+  Nota: no confundir con Page Object Model, que es un patrón de pruebas
+  y no tiene relación con este archivo.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--
+      Los atributos xmlns, xsi y schemaLocation indican qué formato XML se
+      usa, para que los editores puedan validar el archivo. Se copian tal
+      cual y no se modifican.
+    -->
+
+    <!-- Versión del formato del POM. Para Maven 3 es siempre 4.0.0. -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+      ==========================================================================
+      COORDENADAS DEL PROYECTO
+      ==========================================================================
+      Las tres etiquetas juntas (groupId, artifactId y version) forman las
+      "coordenadas": la dirección única de un proyecto o librería en Maven.
+    -->
+
+    <!-- groupId: organización o grupo dueño del proyecto. -->
+    <groupId>com.example</groupId>
+
+    <!-- artifactId: nombre del proyecto. Un artefacto es el archivo que Maven
+         genera o descarga, normalmente un .jar (código Java empaquetado). -->
+    <artifactId>ihf-multi-channel-payments-api</artifactId>
+
+    <!-- version: versión del proyecto. SNAPSHOT significa "en desarrollo":
+         todavía cambia. Una versión sin SNAPSHOT se considera final. -->
+    <version>1.0-SNAPSHOT</version>
+
+    <!--
+      ==========================================================================
+      PROPIEDADES
+      ==========================================================================
+      Variables generales del proyecto que Maven usa al construirlo.
+    -->
+    <properties>
+
+        <!-- Versión de Java con la que se compila el código. 21 = Java 21,
+             la que tienes instalada (JDK Temurin). El JDK es el kit de
+             desarrollo de Java e incluye el compilador. -->
+        <maven.compiler.release>21</maven.compiler.release>
+
+        <!-- Codificación de los archivos de texto del proyecto (código y
+             recursos). UTF-8 permite tildes, ñ y símbolos especiales sin que
+             se corrompan. No es lo mismo que la declaración XML de arriba:
+             aquella describe el pom.xml; esta describe los demás archivos. -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    </properties>
+
+    <!--
+      ==========================================================================
+      DEPENDENCIAS
+      ==========================================================================
+      Una dependencia es una librería o framework externo que el proyecto
+      necesita. Maven lo descarga automáticamente desde un repositorio (un
+      servidor en internet donde se publican; el principal es Maven Central).
+    -->
+    <dependencies>
+
+        <!-- KARATE: framework para escribir y ejecutar pruebas de API.
+             Incluye cliente HTTP, validaciones (la palabra clave match) y
+             reportes. Las pruebas se escriben en archivos .feature, en un
+             lenguaje casi natural, y no en código Java.
+             scope = test: se usa solo al ejecutar pruebas y no forma parte
+             del producto final. -->
+        <dependency>
+            <groupId>io.karatelabs</groupId>
+            <artifactId>karate-core</artifactId>
+            <version>2.1.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUNIT 5 (junit-jupiter): framework de pruebas para Java. Descubre
+             y ejecuta los métodos marcados con @Test, y aporta las aserciones
+             (assertTrue, assertEquals) para validar resultados. Aquí actúa
+             como el arranque JUnit 5 de BcpFinancialApiTest, que a su vez
+             lanza el flujo Karate de pagos BCP. -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.4</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!--
+      ==========================================================================
+      BUILD (CONSTRUCCIÓN)
+      ==========================================================================
+      Configura cómo Maven construye y ejecuta el proyecto. Las tareas las
+      hacen los plugins (extensiones de Maven). Por ejemplo, Surefire es el
+      plugin que lanza las pruebas cuando corres mvn test; ya viene incluido
+      por defecto y por eso no hace falta declararlo.
+    -->
+    <build>
+
+        <!--
+          testResources: carpetas con archivos de apoyo para las pruebas que
+          no son código Java (por ejemplo .feature, JSON, CSV). Maven los
+          copia al classpath de pruebas.
+          Classpath: lista de carpetas donde Java busca clases y recursos al
+          ejecutarse. Cuando Karate usa classpath:examples, busca la carpeta
+          examples dentro de esa lista.
+          Importante: al definir testResources se reemplaza la configuración
+          por defecto de Maven, por eso se declaran las dos carpetas.
+        -->
+        <testResources>
+
+            <!-- Carpeta src/test/java: mantiene los recursos de prueba
+                 complementarios, excluyendo los .java, que Maven ya compila
+                 por separado. -->
+            <testResource>
+                <directory>src/test/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+
+            <!-- Carpeta src/test/resources: ubicación estándar de recursos de
+                 prueba (datos JSON, CSV, karate-config.js, etc.). -->
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+
+        </testResources>
+
+    </build>
+</project>

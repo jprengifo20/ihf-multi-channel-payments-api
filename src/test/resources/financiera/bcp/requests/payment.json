@@ -1,0 +1,12 @@
+{
+  "rqUUID": "#(rqUUID)",
+  "operationDate": "#(operationDate)",
+  "operationNumber": "#(operationNumber)",
+  "financialEntity": "002",
+  "channel": "IB",
+  "serviceId": "1002",
+  "customerId": "#(customerId)",
+  "paymentType": "01",
+  "amountTotal": "#(amountTotal)",
+  "documents": "#(documents)"
+}

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="financiera.bcp.BcpFinancialApiTest" time="16.938" tests="1" errors="0" skipped="0" failures="0" flakes="0">
+  <properties>
+    <property name="java.specification.version" value="21"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.class.path" value="C:\Users\JeanRengifo_tz7t1x1\Documents\1. HU\OKA-Repositorios\ihf-multi-channel-payments-api\target\test-classes;C:\Users\JeanRengifo_tz7t1x1\Documents\1. HU\OKA-Repositorios\ihf-multi-channel-payments-api\target\classes;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\karatelabs\karate-core\2.1.3\karate-core-2.1.3.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\karatelabs\karate-js\2.1.3\karate-js-2.1.3.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\net\minidev\json-smart\2.6.0\json-smart-2.6.0.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\net\minidev\accessors-smart\2.6.0\accessors-smart-2.6.0.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\ow2\asm\asm\9.7.1\asm-9.7.1.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\com\jayway\jsonpath\json-path\3.0.0\json-path-3.0.0.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\apache\httpcomponents\client5\httpclient5\5.6.4\httpclient5-5.6.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\apache\httpcomponents\core5\httpcore5\5.4.3\httpcore5-5.4.3.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\apache\httpcomponents\core5\httpcore5-h2\5.4.3\httpcore5-h2-5.4.3.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-handler\4.2.18.Final\netty-handler-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-common\4.2.18.Final\netty-common-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-resolver\4.2.18.Final\netty-resolver-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-buffer\4.2.18.Final\netty-buffer-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-transport\4.2.18.Final\netty-transport-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-transport-native-unix-common\4.2.18.Final\netty-transport-native-unix-common-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-codec-base\4.2.18.Final\netty-codec-base-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-codec-http\4.2.18.Final\netty-codec-http-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-codec-compression\4.2.18.Final\netty-codec-compression-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\yaml\snakeyaml\2.7\snakeyaml-2.7.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\de\siegmar\fastcsv\4.4.0\fastcsv-4.4.0.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\thymeleaf\thymeleaf\3.1.5.RELEASE\thymeleaf-3.1.5.RELEASE.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\ognl\ognl\3.3.4\ognl-3.3.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\javassist\javassist\3.29.0-GA\javassist-3.29.0-GA.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\attoparser\attoparser\2.0.7.RELEASE\attoparser-2.0.7.RELEASE.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\unbescape\unbescape\1.1.6.RELEASE\unbescape-1.1.6.RELEASE.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\info\picocli\picocli\4.7.7\picocli-4.7.7.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\brotli\dec\0.1.2\dec-0.1.2.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\slf4j\slf4j-api\2.0.20\slf4j-api-2.0.20.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\jupiter\junit-jupiter\5.11.4\junit-jupiter-5.11.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.11.4\junit-jupiter-api-5.11.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\platform\junit-platform-commons\1.11.4\junit-platform-commons-1.11.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.11.4\junit-jupiter-params-5.11.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.11.4\junit-jupiter-engine-5.11.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\platform\junit-platform-engine\1.11.4\junit-platform-engine-1.11.4.jar"/>
+    <property name="java.vm.vendor" value="Eclipse Adoptium"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="karate.env" value="test"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://adoptium.net/"/>
+    <property name="user.timezone" value="America/Lima"/>
+    <property name="os.name" value="Windows 11"/>
+    <property name="java.vm.specification.version" value="21"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="PE"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot\bin"/>
+    <property name="sun.java.command" value="C:\Users\JeanRengifo_tz7t1x1\AppData\Local\Temp\surefire12824088244089731925\surefirebooter-20261013174124515_3.jar C:\Users\JeanRengifo_tz7t1x1\AppData\Local\Temp\surefire12824088244089731925 2026-10-13T17-41-24_355-jvmRun1 surefire-20261013174124515_1tmp surefire_0-20261013174124515_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="C:\Users\JeanRengifo_tz7t1x1\Documents\1. HU\OKA-Repositorios\ihf-multi-channel-payments-api\target\test-classes;C:\Users\JeanRengifo_tz7t1x1\Documents\1. HU\OKA-Repositorios\ihf-multi-channel-payments-api\target\classes;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\karatelabs\karate-core\2.1.3\karate-core-2.1.3.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\karatelabs\karate-js\2.1.3\karate-js-2.1.3.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\net\minidev\json-smart\2.6.0\json-smart-2.6.0.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\net\minidev\accessors-smart\2.6.0\accessors-smart-2.6.0.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\ow2\asm\asm\9.7.1\asm-9.7.1.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\com\jayway\jsonpath\json-path\3.0.0\json-path-3.0.0.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\apache\httpcomponents\client5\httpclient5\5.6.4\httpclient5-5.6.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\apache\httpcomponents\core5\httpcore5\5.4.3\httpcore5-5.4.3.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\apache\httpcomponents\core5\httpcore5-h2\5.4.3\httpcore5-h2-5.4.3.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-handler\4.2.18.Final\netty-handler-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-common\4.2.18.Final\netty-common-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-resolver\4.2.18.Final\netty-resolver-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-buffer\4.2.18.Final\netty-buffer-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-transport\4.2.18.Final\netty-transport-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-transport-native-unix-common\4.2.18.Final\netty-transport-native-unix-common-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-codec-base\4.2.18.Final\netty-codec-base-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-codec-http\4.2.18.Final\netty-codec-http-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\io\netty\netty-codec-compression\4.2.18.Final\netty-codec-compression-4.2.18.Final.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\yaml\snakeyaml\2.7\snakeyaml-2.7.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\de\siegmar\fastcsv\4.4.0\fastcsv-4.4.0.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\thymeleaf\thymeleaf\3.1.5.RELEASE\thymeleaf-3.1.5.RELEASE.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\ognl\ognl\3.3.4\ognl-3.3.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\javassist\javassist\3.29.0-GA\javassist-3.29.0-GA.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\attoparser\attoparser\2.0.7.RELEASE\attoparser-2.0.7.RELEASE.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\unbescape\unbescape\1.1.6.RELEASE\unbescape-1.1.6.RELEASE.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\info\picocli\picocli\4.7.7\picocli-4.7.7.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\brotli\dec\0.1.2\dec-0.1.2.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\slf4j\slf4j-api\2.0.20\slf4j-api-2.0.20.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\jupiter\junit-jupiter\5.11.4\junit-jupiter-5.11.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.11.4\junit-jupiter-api-5.11.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\platform\junit-platform-commons\1.11.4\junit-platform-commons-1.11.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.11.4\junit-jupiter-params-5.11.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.11.4\junit-jupiter-engine-5.11.4.jar;C:\Users\JeanRengifo_tz7t1x1\.m2\repository\org\junit\platform\junit-platform-engine\1.11.4\junit-platform-engine-1.11.4.jar"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\JeanRengifo_tz7t1x1"/>
+    <property name="user.language" value="es"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2026-08-18"/>
+    <property name="java.home" value="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="C:\Users\JeanRengifo_tz7t1x1\Documents\1. HU\OKA-Repositorios\ihf-multi-channel-payments-api"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="karate.options" value="--tags @smoke"/>
+    <property name="surefire.real.class.path" value="C:\Users\JeanRengifo_tz7t1x1\AppData\Local\Temp\surefire12824088244089731925\surefirebooter-20261013174124515_3.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="21.0.12.1+1-LTS"/>
+    <property name="user.name" value="JeanRengifo_tz7t1x1"/>
+    <property name="stdout.encoding" value="Cp1252"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="operationNumber" value="01103102"/>
+    <property name="customerId" value="82255443"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="Temurin-21.0.12.1+1"/>
+    <property name="localRepository" value="C:\Users\JeanRengifo_tz7t1x1\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://github.com/adoptium/adoptium-support/issues"/>
+    <property name="java.io.tmpdir" value="C:\Users\JEANRE~2\AppData\Local\Temp\"/>
+    <property name="java.version" value="21.0.12.1"/>
+    <property name="user.dir" value="C:\Users\JeanRengifo_tz7t1x1\Documents\1. HU\OKA-Repositorios\ihf-multi-channel-payments-api"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="native.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Users\JeanRengifo_tz7t1x1\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\JeanRengifo_tz7t1x1\bin;C:\Users\JeanRengifo_tz7t1x1\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\debugCommand;C:\Users\JeanRengifo_tz7t1x1\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\copilotCli;C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot\bin;C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\Amazon\AWSCLIV2;C:\Program Files\Git\cmd;C:\Users\JeanRengifo_tz7t1x1\AppData\Local\nvm;C:\nvm4w\nodejs;C:\Users\JeanRengifo_tz7t1x1\AppData\Local\Programs\Karate;C:\Users\JeanRengifo_tz7t1x1\AppData\Local\Microsoft\WindowsApps;C:\Users\JeanRengifo_tz7t1x1\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\JeanRengifo_tz7t1x1\AppData\Local\nvm;C:\nvm4w\nodejs;C:\Program Files (x86)\apache-maven-3.10.0\bin;C:\Users\JeanRengifo_tz7t1x1\.vscode\extensions\vscjava.vscode-java-debug-0.59.0\bundled\scripts\noConfigScripts;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl;."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="Cp1252"/>
+    <property name="java.vendor" value="Eclipse Adoptium"/>
+    <property name="java.vm.version" value="21.0.12.1+1-LTS"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="65.0"/>
+  </properties>
+  <testcase name="ejecutarPruebasBcpPorTag" classname="financiera.bcp.BcpFinancialApiTest" time="16.917">
+    <system-out><![CDATA[&amp#27;[90m---------------------------------------------------------&amp#27;[0m
+feature: &amp#27;[32mfinanciera/bcp/bcp-flow.feature&amp#27;[0m
+scenarios:  2 | passed:  2 | &amp#27;[32mpassed&amp#27;[0m | time: 16.5300
+&amp#27;[90m=========================================================&amp#27;[0m
+
+&amp#27;[36m============================================================&amp#27;[0m
+elapsed:  16.66s | threads:   1 | efficiency: 0.99
+features:    1 | passed:    1 | &amp#27;[92mall passed&amp#27;[0m
+scenarios:   2 | passed:    2 | &amp#27;[92mall passed&amp#27;[0m
+&amp#27;[36m------------------------------------------------------------&amp#27;[0m
+Karate 2.1.3 | env: &amp#27;[36mtest&amp#27;[0m | HTML report:
+file:///C:/Users/JeanRengifo_tz7t1x1/Documents/1.%20HU/OKA-Repositorios/ihf-multi-channel-payments-api/target/karate-reports/karate-summary.html
+&amp#27;[92m================================================================================================================================================&amp#27;[0m
+]]></system-out>
+    <system-err><![CDATA[SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+]]></system-err>
+  </testcase>
+</testsuite>
