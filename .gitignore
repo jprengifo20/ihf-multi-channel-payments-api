@@ -5,9 +5,6 @@
 ### Maven / reportes ###
 /target/
 
-### IA (configuración local) ###
-.claude/
-
 ### IDEs ###
 .idea/
 *.iml

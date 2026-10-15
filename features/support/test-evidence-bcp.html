@@ -1,71 +1,770 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<title>{{ticket}} · Regresión BCP · {{date}}</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evidencia · Regresión BCP</title>
+
+<!-- Aplica el tema antes de pintar la página (evita parpadeo).
+     Usa la preferencia guardada por el botón; si no hay, sigue prefers-color-scheme. -->
+<script>
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('api-evidence-theme'); } catch (e) {}
+    var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  })();
+</script>
+
 <style>
+  /* =====================================================================
+     TEMA: variables CSS. Modo claro por defecto, modo oscuro con data-theme.
+     ===================================================================== */
+  :root {
+    color-scheme: light;
+    --bg: #eef1f5;
+    --card: #ffffff;
+    --text: #1b2430;
+    --muted: #5d6b7c;
+    --border: #d8dee6;
+    --subtle: #f6f8fa;
+
+    --pass: #1a8f4c;
+    --pass-bg: #e4f5eb;
+    --fail: #cf2e24;
+    --fail-bg: #fdecea;
+    --skip: #8a96a6;
+    --on-status: #ffffff;
+
+    --post: #1a8f4c;
+
+    --j-key: #0550ae;
+    --j-str: #0a7a3c;
+    --j-num: #b35900;
+    --j-bool: #8250df;
+    --j-null: #6e7781;
+
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #10151c;
+    --card: #18202a;
+    --text: #e6ebf1;
+    --muted: #93a1b3;
+    --border: #2a3544;
+    --subtle: #141b24;
+
+    --pass: #4ad88a;
+    --pass-bg: #173327;
+    --fail: #ff7468;
+    --fail-bg: #3a1d1d;
+    --skip: #6b7888;
+    --on-status: #0f141a;
+
+    --post: #4ad88a;
+
+    --j-key: #7cc0ff;
+    --j-str: #86e3ae;
+    --j-num: #f5b56e;
+    --j-bool: #cfa8ff;
+    --j-null: #8b98a8;
+  }
+
+  /* =====================================================================
+     BASE
+     ===================================================================== */
   * { box-sizing: border-box; }
-  body { margin: 0; padding: 32px 16px; background: #f3f4f6; color: #1f2937;
-         font: 14px/1.5 "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-  .card { max-width: 760px; margin: 0 auto; background: #fff; border-radius: 12px;
-          box-shadow: 0 1px 3px rgba(0,0,0,.08); overflow: hidden; }
-  header { display: flex; justify-content: space-between; align-items: center; gap: 16px;
-           padding: 24px 28px; background: #0f2a4a; color: #fff; }
-  header h1 { margin: 0; font-size: 20px; font-weight: 600; }
-  header p { margin: 4px 0 0; color: #c7d2e0; font-size: 13px; }
-  .badge { padding: 6px 14px; border-radius: 999px; background: #16a34a; color: #fff;
-           font-weight: 600; font-size: 13px; white-space: nowrap; }
-  .data { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #e5e7eb;
-          border-bottom: 1px solid #e5e7eb; }
-  .data div { background: #fff; padding: 14px 20px; }
-  .data span { display: block; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
-  .data strong { font-size: 16px; font-variant-numeric: tabular-nums; }
-  section { padding: 20px 28px 8px; }
-  h2 { margin: 0 0 12px; font-size: 15px; }
-  table { width: 100%; border-collapse: collapse; }
-  th { text-align: left; color: #6b7280; font-size: 12px; font-weight: 600; text-transform: uppercase;
-       letter-spacing: .04em; padding: 8px 10px; border-bottom: 2px solid #e5e7eb; }
-  td { padding: 12px 10px; border-bottom: 1px solid #f0f1f3; font-variant-numeric: tabular-nums; }
-  .ok { color: #16a34a; font-weight: 600; }
-  footer { padding: 16px 28px 24px; color: #6b7280; font-size: 12px; }
-  @media (max-width: 560px) { .data { grid-template-columns: 1fr; } header { flex-direction: column; align-items: flex-start; } }
-  @media print { body { background: #fff; padding: 0; } .card { box-shadow: none; border: 1px solid #e5e7eb; }
-                 header, .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  html, body { background: var(--bg); }
+  body {
+    width: 820px;
+    margin: 16px auto;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  button {
+    font-family: var(--font);
+    font-size: 12px;
+    color: var(--text);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+  button:hover { border-color: var(--muted); }
+  button:disabled { opacity: .6; cursor: progress; }
+
+  .toolbar { display: flex; justify-content: flex-end; gap: 8px; padding: 0 10px 2px; }
+
+  /* Zona que se captura: fondo del tema + 10px de padding */
+  .snap { background: var(--bg); padding: 10px; }
+
+  /* =====================================================================
+     TARJETA (común al resumen y a los pasos)
+     ===================================================================== */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 6px solid var(--st);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .card.pass { --st: var(--pass); --st-bg: var(--pass-bg); }
+  .card.fail { --st: var(--fail); --st-bg: var(--fail-bg); }
+
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .code {
+    flex: none;
+    min-width: 56px;
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--st);
+  }
+  .title { flex: 1; min-width: 0; }
+  .name { font-size: 14px; font-weight: 650; margin-bottom: 3px; }
+  .name .note { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 6px; }
+  .endpoint { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+  .method {
+    flex: none;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--post);
+    border: 1px solid var(--post);
+    border-radius: 3px;
+    padding: 0 5px;
+  }
+  .url { font-family: var(--mono); font-size: 12px; color: var(--muted); word-break: break-all; }
+  .badge {
+    flex: none;
+    background: var(--st);
+    color: var(--on-status);
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .strip {
+    display: flex;
+    gap: 26px;
+    padding: 6px 14px;
+    background: var(--subtle);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .strip .lbl { color: var(--muted); margin-right: 6px; }
+  .strip .val { font-family: var(--mono); font-weight: 700; }
+  .strip .val.bad { color: var(--fail); }
+
+  .error {
+    margin: 10px 14px;
+    padding: 7px 10px;
+    background: var(--fail-bg);
+    color: var(--fail);
+    border-left: 3px solid var(--fail);
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    min-height: 34px;
+    padding: 5px 14px;
+    border-top: 1px solid var(--border);
+    background: var(--subtle);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .foot .meta { display: flex; gap: 18px; }
+  .foot .meta b { color: var(--text); font-weight: 600; }
+  .foot .actions { display: flex; gap: 6px; }
+
+  /* =====================================================================
+     RESUMEN
+     ===================================================================== */
+  .summary .code { font-family: var(--font); font-size: 34px; min-width: 40px; }
+  .summary .name { font-size: 16px; }
+  .summary .flow { color: var(--muted); font-size: 12px; }
+  .summary .badge { font-size: 14px; padding: 6px 14px; }
+
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--border); }
+  .facts div { padding: 8px 14px; border-right: 1px solid var(--border); }
+  .facts div:nth-child(4n) { border-right: none; }
+  .facts div:nth-child(n+5) { border-top: 1px solid var(--border); }
+  .facts span { display: block; color: var(--muted); font-size: 11px; text-transform: uppercase; }
+  .facts b { font-family: var(--mono); font-size: 13px; }
+
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px 14px; }
+  .step { border: 1px solid var(--border); border-radius: 4px; padding: 6px 8px; background: var(--subtle); }
+  .step .ic { font-weight: 800; margin-right: 4px; }
+  .step.ok .ic { color: var(--pass); }
+  .step.ko { border-color: var(--fail); background: var(--fail-bg); }
+  .step.ko .ic, .step.ko .st { color: var(--fail); }
+  .step.skip { color: var(--skip); }
+  .step .st { display: block; margin-top: 2px; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+
+  /* =====================================================================
+     PASOS: request / response
+     ===================================================================== */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; }
+  .col { min-width: 0; padding: 8px 14px 10px; }
+  .col + .col { border-left: 1px solid var(--border); }
+  .col h4 { margin: 0 0 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+  .sub { margin: 8px 0 3px; font-size: 11px; font-weight: 600; color: var(--muted); }
+  .col h4 + .sub { margin-top: 0; }
+
+  .kv { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11.5px; border: 1px solid var(--border); }
+  .kv td { padding: 2px 6px; border-bottom: 1px solid var(--border); vertical-align: top; word-break: break-all; }
+  .kv tr:last-child td { border-bottom: none; }
+  .kv td.k { width: 38%; color: var(--muted); background: var(--subtle); }
+
+  pre.body {
+    margin: 0;
+    padding: 6px 8px;
+    background: var(--subtle);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .j-key  { color: var(--j-key); }
+  .j-str  { color: var(--j-str); }
+  .j-num  { color: var(--j-num); }
+  .j-bool { color: var(--j-bool); }
+  .j-null { color: var(--j-null); }
+  .trunc  { color: var(--muted); font-style: italic; }
+  .empty  { color: var(--muted); font-style: italic; font-size: 12px; }
+
+  .checks {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 14px;
+    padding: 7px 14px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .checks .lbl { color: var(--muted); font-weight: 600; }
+  .check .ic { font-weight: 700; margin-right: 3px; }
+  .check.ok .ic { color: var(--pass); }
+  .check.ko, .check.ko .ic { color: var(--fail); }
 </style>
 </head>
 <body>
-<div class="card">
-  <header>
-    <div>
-      <h1>Regresión BCP · {{ticket}}</h1>
-      <p>Consultar → pagar → anular → verificar que la deuda vuelve</p>
-    </div>
-    <div class="badge">✔ APROBADA</div>
-  </header>
 
-  <div class="data">
-    <div><span>Ambiente</span><strong>{{env}}</strong></div>
-    <div><span>Fecha (servidor)</span><strong>{{date}}</strong></div>
-    <div><span>Cliente (DNI)</span><strong>{{customerId}}</strong></div>
-    <div><span>Número de operación</span><strong>{{operationNumber}}</strong></div>
-    <div><span>Documento</span><strong>{{documentId}}</strong></div>
-    <div><span>Monto</span><strong>{{amount}}</strong></div>
+  <!-- Botones globales (no forman parte de ninguna captura) -->
+  <div class="toolbar">
+    <button type="button" data-action="download-all">Descargar todas (PNG)</button>
+    <button type="button" data-action="theme">Tema claro / oscuro</button>
   </div>
 
-  <section>
-    <h2>Pasos</h2>
-    <table>
-      <thead><tr><th>#</th><th>Paso</th><th>Código</th><th>Resultado</th><th>Hora</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td>Consulta de deuda</td><td class="ok">{{inquiryCode}}</td><td>{{inquiryDescription}}</td><td>{{inquiryTime}}</td></tr>
-        <tr><td>2</td><td>Pago</td><td class="ok">{{paymentCode}}</td><td>{{paymentDescription}}</td><td>{{paymentTime}}</td></tr>
-        <tr><td>3</td><td>Anulación</td><td class="ok">{{annulmentCode}}</td><td>{{annulmentDescription}}</td><td>{{annulmentTime}}</td></tr>
-        <tr><td>4</td><td>Deuda restituida</td><td class="ok">{{restoredCode}}</td><td>Vuelve el documento {{documentId}}</td><td>{{restoredTime}}</td></tr>
-      </tbody>
-    </table>
-  </section>
+  <main id="report"></main>
 
-  <footer>Generado automáticamente por la regresión Karate de ihf-multi-channel-payments-api.</footer>
-</div>
+  <!-- html2canvas 1.4.1 desde cdnjs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+/* =========================================================================
+   DATOS: la regresión reemplaza el marcador por los datos reales de la corrida
+   (features/support/test-evidence-bcp.js). Si se abre la plantilla sin datos,
+   se muestra SAMPLE: una corrida de ejemplo que falla en el último paso.
+   ========================================================================= */
+const EVIDENCE = /*@@EVIDENCE@@*/ null;
+
+const SAMPLE = {
+  ticket: 'QATEST-1841',
+  environment: 'test',
+  customerId: '27049893',
+  operationNumber: '92087905',
+  documentId: '27049893001-1',
+  amount: '11.45',
+  executedAt: '2026-10-15T13:11:51',
+  durationMs: 98000,
+  error: "match failed: EQUALS\n  $ | not equal (STRING:STRING)\n  'CP0006'\n  'CP0000'",
+  steps: [
+    { name: 'Consulta de deuda', executed: true },
+    { name: 'Pago', executed: true },
+    { name: 'Anulación', executed: true },
+    { name: 'Deuda restituida', executed: false }
+  ],
+  cards: [
+    {
+      name: 'Consulta de deuda', method: 'POST', expectedStatus: 200, status: 200, durationMs: 412,
+      url: 'https://api.test.oka.com.pe/v1/integrations/bcp/inquire',
+      request: {
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Basic ****' },
+        queryParams: {},
+        body: { rqUUID: '5b0d7a1e-8c42-4f6e-b1d3-2e9a7c4f8d10', customerId: '27049893', serviceId: 'N001' }
+      },
+      response: { body: {
+        rqUUID: '5b0d7a1e-8c42-4f6e-b1d3-2e9a7c4f8d10', resultCode: 'CP0000', resultDescription: 'PROCESO CONFORME',
+        operationDate: '2026-10-15T13:11:51', operationNumberCompany: '806786f4', customerName: 'CLIENTE DE PRUEBA',
+        documents: [{ documentId: '27049893001-1', expirationDate: '2026-11-18', documentReference: '27049893001-1',
+                      amounts: [{ amountType: 'totalAmount', amount: '11.45' }] }]
+      } },
+      assertions: [
+        { text: 'resultCode = CP0000', ok: true },
+        { text: 'resultDescription = PROCESO CONFORME', ok: true },
+        { text: 'Tiene deuda pendiente', ok: true }
+      ],
+      executedAt: '2026-10-15T13:11:51'
+    },
+    {
+      name: 'Pago', method: 'POST', expectedStatus: 200, status: 200, durationMs: 1830,
+      url: 'https://api.test.oka.com.pe/v1/integrations/bcp/payment',
+      request: {
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Basic ****' },
+        queryParams: {},
+        body: { rqUUID: 'a1f4c2d8-3b7e-4e19-9c55-0d2b6e8f1a33', operationDate: '2026-10-15T13:11:58', operationNumber: '92087905',
+                financialEntity: '002', channel: 'IB', serviceId: '1002', customerId: '27049893', paymentType: '01',
+                amountTotal: '11.45', documents: [{ documentId: '27049893001-1' }] }
+      },
+      response: { body: { rqUUID: 'a1f4c2d8-3b7e-4e19-9c55-0d2b6e8f1a33', resultCode: 'CP0000', resultDescription: 'PROCESO CONFORME',
+                          operationDate: '2026-10-15T13:11:58', operationNumberCompany: '813642' } },
+      assertions: [
+        { text: 'resultCode = CP0000', ok: true },
+        { text: 'resultDescription = PROCESO CONFORME', ok: true }
+      ],
+      executedAt: '2026-10-15T13:11:58'
+    },
+    {
+      name: 'Anulación', note: 'tras 20 s de espera', method: 'POST', expectedStatus: 200, status: 200, durationMs: 960,
+      url: 'https://api.test.oka.com.pe/v1/integrations/bcp/annulment',
+      request: {
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Basic ****' },
+        queryParams: {},
+        body: { rqUUID: 'c93e1f02-6a7b-4d58-8e21-f4b0a9d3c6e7', operationDate: '2026-10-15T13:12:22', operationNumber: '92087905',
+                operationNumberAnnulment: '92087905', financialEntity: '002', channel: 'PZ', customerId: '27049893' }
+      },
+      response: { body: { rqUUID: 'c93e1f02-6a7b-4d58-8e21-f4b0a9d3c6e7', resultCode: 'CP0000', resultDescription: 'PROCESO CONFORME',
+                          operationDate: '2026-10-15T13:12:22' } },
+      assertions: [
+        { text: 'resultCode = CP0000', ok: true },
+        { text: 'resultDescription = PROCESO CONFORME', ok: true }
+      ],
+      executedAt: '2026-10-15T13:12:22'
+    }
+  ]
+};
+
+const DATA = EVIDENCE || SAMPLE;
+
+const CONFIG = {
+  showRequestHeaders: true,     // headers del request (Authorization siempre enmascarado)
+  showResponseHeaders: false,   // headers de la response: ocultos
+  maxBodyLines: 30              // máx. líneas por body (0 = sin límite)
+};
+
+/* =========================================================================
+   A PARTIR DE AQUÍ NO NECESITAS EDITAR NADA
+   ========================================================================= */
+
+const THEME_KEY = 'api-evidence-theme';
+const PASSED = !DATA.error;
+
+/* ---------- Utilidades ---------- */
+function esc(value) {
+  return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function hasKeys(obj) {
+  return obj && typeof obj === 'object' && Object.keys(obj).length > 0;
+}
+
+function cardPassed(card) {
+  return card.status === card.expectedStatus && (card.assertions || []).every(a => a.ok);
+}
+
+// Fecha del servidor (sin zona horaria): se muestra tal cual, en formato dd/mm/aaaa hh:mm:ss
+function formatDate(value) {
+  const m = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2})/);
+  return m ? `${m[3]}/${m[2]}/${m[1]} ${m[4]}` : String(value || '');
+}
+
+function formatDuration(ms) {
+  if (ms == null) return '—';
+  const s = Math.round(ms / 1000);
+  return s < 60 ? `${s} s` : `${Math.floor(s / 60)} min ${s % 60} s`;
+}
+
+function slug(text) {
+  return String(text || '')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+// Imágenes: la 0 es el resumen y las siguientes, los pasos
+function fileName(index) {
+  const base = slug(DATA.ticket);
+  return index === 0 ? `${base}-resumen.png` : `${base}-${index}-${slug(DATA.cards[index - 1].name)}.png`;
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+/* ---------- Resaltado JSON ---------- */
+function highlightJson(text) {
+  const re = /("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?)/g;
+  return esc(text).replace(re, match => {
+    if (match[0] === '"') {
+      if (/:\s*$/.test(match)) return `<span class="j-key">${match.replace(/\s*:\s*$/, '')}</span>:`;
+      return `<span class="j-str">${match}</span>`;
+    }
+    if (match === 'true' || match === 'false') return `<span class="j-bool">${match}</span>`;
+    if (match === 'null') return `<span class="j-null">${match}</span>`;
+    return `<span class="j-num">${match}</span>`;
+  });
+}
+
+/* ---------- Bloques ---------- */
+function bodyBlock(body) {
+  if (body === undefined || body === null || body === '') return '<div class="empty">— sin body —</div>';
+
+  let text;
+  let isJson = false;
+  if (typeof body === 'string') {
+    try { text = JSON.stringify(JSON.parse(body), null, 2); isJson = true; } catch (e) { text = body; }
+  } else {
+    text = JSON.stringify(body, null, 2);
+    isJson = true;
+  }
+
+  const max = CONFIG.maxBodyLines > 0 ? CONFIG.maxBodyLines : Infinity;
+  const lines = text.split('\n');
+  const cut = lines.length > max;
+  let html = (cut ? lines.slice(0, max) : lines).join('\n');
+  html = isJson ? highlightJson(html) : esc(html);
+  if (cut) {
+    const rest = lines.length - max;
+    html += `\n<span class="trunc">… ${rest} línea${rest === 1 ? '' : 's'} más</span>`;
+  }
+  return `<pre class="body">${html}</pre>`;
+}
+
+function kvTable(obj) {
+  const rows = Object.entries(obj).map(([k, v]) => {
+    const val = v !== null && typeof v === 'object' ? JSON.stringify(v) : v;
+    return `<tr><td class="k">${esc(k)}</td><td class="v">${esc(val)}</td></tr>`;
+  }).join('');
+  return `<table class="kv">${rows}</table>`;
+}
+
+function requestColumn(req) {
+  let html = '<section class="col"><h4>Request</h4>';
+  if (hasKeys(req.queryParams)) html += '<div class="sub">Query params</div>' + kvTable(req.queryParams);
+  if (CONFIG.showRequestHeaders && hasKeys(req.headers)) html += '<div class="sub">Headers</div>' + kvTable(req.headers);
+  return html + '<div class="sub">Body</div>' + bodyBlock(req.body) + '</section>';
+}
+
+function responseColumn(res) {
+  let html = '<section class="col"><h4>Response</h4>';
+  if (CONFIG.showResponseHeaders && hasKeys(res.headers)) html += '<div class="sub">Headers</div>' + kvTable(res.headers);
+  return html + '<div class="sub">Body</div>' + bodyBlock(res.body) + '</section>';
+}
+
+function checksRow(assertions) {
+  const list = assertions || [];
+  if (!list.length) return '<div class="checks"><span class="lbl">Validaciones</span><span class="empty">Sin validaciones</span></div>';
+  const okCount = list.filter(a => a.ok).length;
+  const items = list.map(a => {
+    const icon = a.ok ? '✔︎' : '✘︎';
+    return `<span class="check ${a.ok ? 'ok' : 'ko'}"><span class="ic">${icon}</span>${esc(a.text)}</span>`;
+  }).join('');
+  return `<div class="checks"><span class="lbl">Validaciones ${okCount}/${list.length}</span>${items}</div>`;
+}
+
+function footer(index, executedAt) {
+  return `
+      <footer class="foot">
+        <div class="meta">
+          <span>Ambiente: <b>${esc(DATA.environment)}</b></span>
+          <span>Ejecutado: <b>${esc(formatDate(executedAt))}</b></span>
+          <span>${esc(DATA.ticket)}</span>
+        </div>
+        <div class="actions" data-snap="ignore">
+          <button type="button" data-action="copy" data-index="${index}">Copiar imagen</button>
+          <button type="button" data-action="download" data-index="${index}">Descargar PNG</button>
+        </div>
+      </footer>`;
+}
+
+/* ---------- Tarjeta de resumen ---------- */
+// Estado de cada paso: ok, ko (falló) o skip (no llegó a ejecutarse)
+function stepState(step) {
+  if (!step.executed) return 'skip';
+  const card = DATA.cards.find(c => c.name === step.name);
+  return card && cardPassed(card) ? 'ok' : 'ko';
+}
+
+// Paso en el que falló: el primero con validaciones fallidas o, si no hay, el primero no ejecutado
+function failedStepName() {
+  if (PASSED) return null;
+  const states = DATA.steps.map(stepState);
+  const index = states.indexOf('ko') >= 0 ? states.indexOf('ko') : states.indexOf('skip');
+  return index >= 0 ? DATA.steps[index].name : null;
+}
+
+// El mensaje de Karate puede incluir la respuesta completa: se muestran las primeras líneas (el detalle está en la tarjeta del paso)
+function shortError(text, maxLines = 8) {
+  const lines = String(text || '').split('\n');
+  return lines.length > maxLines ? lines.slice(0, maxLines).join('\n') + '\n…' : lines.join('\n');
+}
+
+function summaryHtml() {
+  const failedStep = failedStepName();
+  const steps = DATA.steps.map(step => {
+    let state = stepState(step);
+    if (step.name === failedStep) state = 'ko';
+    const card = DATA.cards.find(c => c.name === step.name);
+    const icon = state === 'ok' ? '✔︎' : state === 'ko' ? '✘︎' : '–';
+    const detail = card ? (card.response.body && card.response.body.resultCode) || card.status
+                        : state === 'ko' ? 'falló' : 'no ejecutado';
+    return `<div class="step ${state}"><span class="ic">${icon}</span>${esc(step.name)}<span class="st">${esc(detail)}</span></div>`;
+  }).join('');
+
+  const amount = DATA.amount != null ? `S/ ${DATA.amount}` : '—';
+  const executedSteps = DATA.steps.filter(s => stepState(s) === 'ok').length;
+
+  return `
+  <div class="snap" id="snap-0">
+    <article class="card summary ${PASSED ? 'pass' : 'fail'}">
+      <header class="head">
+        <div class="code">${PASSED ? '✔︎' : '✘︎'}</div>
+        <div class="title">
+          <div class="name">Regresión BCP · ${esc(DATA.ticket)}</div>
+          <div class="flow">Consulta → Pago → Anulación → Deuda restituida</div>
+        </div>
+        <span class="badge">${PASSED ? 'SUCCESS' : 'FAILED'}</span>
+      </header>
+
+      <div class="facts">
+        <div><span>Ambiente</span><b>${esc(DATA.environment)}</b></div>
+        <div><span>Ejecutado</span><b>${esc(formatDate(DATA.executedAt))}</b></div>
+        <div><span>Duración</span><b>${esc(formatDuration(DATA.durationMs))}</b></div>
+        <div><span>Pasos</span><b>${executedSteps}/${DATA.steps.length}</b></div>
+        <div><span>Cliente (DNI)</span><b>${esc(DATA.customerId || '—')}</b></div>
+        <div><span>Operación</span><b>${esc(DATA.operationNumber || '—')}</b></div>
+        <div><span>Documento</span><b>${esc(DATA.documentId || '—')}</b></div>
+        <div><span>Monto</span><b>${esc(amount)}</b></div>
+      </div>
+
+      <div class="steps">${steps}</div>
+
+      ${PASSED ? '' : `<div class="error"><b>Falló${failedStep ? ' en ' + esc(failedStep) : ''}:</b>\n${esc(shortError(DATA.error))}</div>`}
+      ${footer(0, DATA.executedAt)}
+    </article>
+  </div>`;
+}
+
+/* ---------- Tarjeta de un paso ---------- */
+function cardHtml(card, index) {
+  const pass = cardPassed(card);
+  const statusMatch = card.status === card.expectedStatus;
+  const body = card.response && card.response.body;
+  const code = (body && body.resultCode) || card.status || '—';
+
+  return `
+  <div class="snap" id="snap-${index}">
+    <article class="card ${pass ? 'pass' : 'fail'}">
+      <header class="head">
+        <div class="code">${esc(code)}</div>
+        <div class="title">
+          <div class="name">${esc(card.name)}${card.note ? `<span class="note">${esc(card.note)}</span>` : ''}</div>
+          <div class="endpoint">
+            <span class="method">${esc(card.method)}</span>
+            <span class="url">${esc(card.url)}</span>
+          </div>
+        </div>
+        <span class="badge">${pass ? 'PASS' : 'FAILED'}</span>
+      </header>
+
+      <div class="strip">
+        <div><span class="lbl">HTTP esperado</span><span class="val">${esc(card.expectedStatus)}</span></div>
+        <div><span class="lbl">Obtenido</span><span class="val ${statusMatch ? '' : 'bad'}">${esc(card.status ?? '—')}</span></div>
+        <div><span class="lbl">Tiempo</span><span class="val">${esc(card.durationMs ?? '—')} ms</span></div>
+      </div>
+
+      <div class="cols">
+        ${requestColumn(card.request || {})}
+        ${responseColumn(card.response || {})}
+      </div>
+
+      ${checksRow(card.assertions)}
+      ${footer(index, card.executedAt || DATA.executedAt)}
+    </article>
+  </div>`;
+}
+
+function render() {
+  document.title = `${DATA.ticket} · Regresión BCP · ${PASSED ? 'SUCCESS' : 'FAILED'}`;
+  document.getElementById('report').innerHTML =
+    summaryHtml() + DATA.cards.map((card, i) => cardHtml(card, i + 1)).join('');
+}
+
+/* ---------- Captura (html2canvas) ---------- */
+function ensureLib() {
+  if (typeof html2canvas === 'undefined') {
+    alert('No se pudo cargar html2canvas desde cdnjs. Revisa tu conexión a internet.');
+    return false;
+  }
+  return true;
+}
+
+function currentBg() {
+  return getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#eef1f5';
+}
+
+function capture(index) {
+  return html2canvas(document.getElementById(`snap-${index}`), {
+    scale: 2,
+    backgroundColor: currentBg(),
+    logging: false,
+    useCORS: true,
+    // Lo marcado con data-snap="ignore" (los botones) no sale en la imagen
+    ignoreElements: el => el.getAttribute && el.getAttribute('data-snap') === 'ignore'
+  });
+}
+
+function canvasToBlob(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(b => (b ? resolve(b) : reject(new Error('No se pudo generar el PNG'))), 'image/png');
+  });
+}
+
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+/* ---------- Estado de botones ---------- */
+function setBusy(btn, text) {
+  if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = text;
+}
+
+function done(btn, text) {
+  btn.textContent = text;
+  setTimeout(() => { btn.textContent = btn.dataset.label; btn.disabled = false; }, 1500);
+}
+
+/* ---------- Acciones ---------- */
+async function copyImage(index, btn) {
+  if (!ensureLib()) return;
+  setBusy(btn, 'Generando…');
+  // La promesa del PNG se pasa directo a ClipboardItem para no perder el gesto del usuario (Safari)
+  const blobPromise = capture(index).then(canvasToBlob);
+  try {
+    if (!window.isSecureContext || !navigator.clipboard || !navigator.clipboard.write || typeof ClipboardItem === 'undefined') {
+      throw new Error('Clipboard API no disponible');
+    }
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blobPromise })]);
+    done(btn, 'Copiada ✔︎');
+  } catch (err) {
+    console.warn('No se pudo copiar al portapapeles; se descarga el PNG.', err);
+    try {
+      downloadBlob(await blobPromise, fileName(index));
+      done(btn, 'Descargada');
+    } catch (err2) {
+      console.error(err2);
+      done(btn, 'Error');
+    }
+  }
+}
+
+async function downloadOne(index, btn) {
+  if (!ensureLib()) return;
+  setBusy(btn, 'Generando…');
+  try {
+    downloadBlob(await canvasToBlob(await capture(index)), fileName(index));
+    done(btn, 'Listo ✔︎');
+  } catch (err) {
+    console.error(err);
+    done(btn, 'Error');
+  }
+}
+
+async function downloadAll(btn) {
+  if (!ensureLib()) return;
+  setBusy(btn, 'Generando…');
+  const total = DATA.cards.length + 1;
+  try {
+    for (let i = 0; i < total; i++) {
+      btn.textContent = `Generando ${i + 1}/${total}…`;
+      downloadBlob(await canvasToBlob(await capture(i)), fileName(i));
+      await sleep(400); // pausa para que el navegador no bloquee descargas seguidas
+    }
+    done(btn, 'Listo ✔︎');
+  } catch (err) {
+    console.error(err);
+    done(btn, 'Error');
+  }
+}
+
+/* ---------- Tema ---------- */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+}
+
+// Si el usuario no eligió tema con el botón, se sigue la preferencia del sistema
+const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+const onSystemTheme = e => {
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (err) {}
+  if (!saved) applyTheme(e.matches ? 'dark' : 'light');
+};
+if (darkQuery.addEventListener) darkQuery.addEventListener('change', onSystemTheme);
+else if (darkQuery.addListener) darkQuery.addListener(onSystemTheme);
+
+/* ---------- Eventos ---------- */
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button[data-action]');
+  if (!btn || btn.disabled) return;
+  const index = Number(btn.dataset.index);
+  switch (btn.dataset.action) {
+    case 'copy':         copyImage(index, btn); break;
+    case 'download':     downloadOne(index, btn); break;
+    case 'download-all': downloadAll(btn); break;
+    case 'theme':        toggleTheme(); break;
+  }
+});
+
+render();
+</script>
 </body>
 </html>

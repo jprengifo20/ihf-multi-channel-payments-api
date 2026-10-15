@@ -105,12 +105,14 @@ Quedan en `target/karate-reports/`:
 
 | Archivo | Uso |
 |---|---|
-| `evidencia-QATEST-1841.html` | Evidencia para el ticket: resumen visual de la corrida (solo se genera si la prueba pasó) |
+| `evidencia-QATEST-1841.html` | Evidencia para el ticket: resumen SUCCESS/FAILED y una tarjeta por paso con request y response. Se genera siempre, pase o falle |
 | `karate-summary.html` | Reporte técnico con cada paso; incluye el `operationNumber` usado, útil para rastrear el pago en el backend |
 | JUnit XML | Integración con CI |
 | Cucumber JSON | Para subir resultados a Xray |
 
-**Evidencia para Jira:** abre `evidencia-QATEST-1841.html` en el navegador, `Ctrl + P` → **Guardar como PDF** y adjunta el PDF al ticket (Jira previsualiza PDF, no HTML). Guárdala antes de la siguiente corrida: `mvn clean test` borra `target/`. La plantilla está en `features/support/test-evidence-bcp.html`.
+**Evidencia para Jira:** abre `evidencia-QATEST-1841.html` en el navegador y usa **Copiar imagen** en la tarjeta de resumen (o en la de un paso) y pégala en el ticket con `Ctrl + V`. También puedes descargar los PNG (requiere internet: usa html2canvas desde cdnjs). El header `Authorization` aparece enmascarado. Guárdala antes de la siguiente corrida: `mvn clean test` borra `target/`.
+
+La evidencia la escribe el hook `features/support/test-evidence-bcp.js` (registrado al inicio del escenario con `configure afterScenario`) usando la plantilla `features/support/test-evidence-bcp.html`. Abierta sin datos, la plantilla muestra una corrida de ejemplo para ajustar el diseño sin ejecutar la prueba.
 
 ## Estructura del proyecto
 
@@ -122,14 +124,15 @@ Sigue el layout de los repos `-qa` (`features/` en la raíz, con `context/` y `s
 │   ├── context/
 │   │   └── bcp/                           → cuerpos de los requests: inquire, payment, annulment
 │   └── support/
-│       └── bcp-api.feature                → una operación por endpoint (@ignore)
+│       ├── bcp-api.feature                → una operación por endpoint (@ignore)
+│       ├── test-evidence-bcp.js           → hook que escribe la evidencia al terminar (pase o falle)
+│       └── test-evidence-bcp.html         → plantilla de la evidencia
 ├── src/test/
 │   ├── java/payments/
 │   │   └── PaymentsTest.java              → runner único: ejecuta classpath:features filtrando por tags
 │   └── resources/
 │       ├── karate-config.js               → ambiente, credenciales y funciones auxiliares
 │       └── karate-config-local.json       → credenciales locales (no versionado)
-├── AGENTS.md / CLAUDE.md                  → instrucciones para agentes IA
 └── pom.xml                                → copia features/ a classpath:features
 ```
 
