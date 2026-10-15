@@ -105,9 +105,12 @@ Quedan en `target/karate-reports/`:
 
 | Archivo | Uso |
 |---|---|
-| `karate-summary.html` | Resumen legible; incluye el `operationNumber` usado, útil para rastrear el pago en el backend |
+| `evidencia-QATEST-1841.html` | Evidencia para el ticket: resumen visual de la corrida (solo se genera si la prueba pasó) |
+| `karate-summary.html` | Reporte técnico con cada paso; incluye el `operationNumber` usado, útil para rastrear el pago en el backend |
 | JUnit XML | Integración con CI |
 | Cucumber JSON | Para subir resultados a Xray |
+
+**Evidencia para Jira:** abre `evidencia-QATEST-1841.html` en el navegador, `Ctrl + P` → **Guardar como PDF** y adjunta el PDF al ticket (Jira previsualiza PDF, no HTML). Guárdala antes de la siguiente corrida: `mvn clean test` borra `target/`. La plantilla está en `features/support/test-evidence-bcp.html`.
 
 ## Estructura del proyecto
 

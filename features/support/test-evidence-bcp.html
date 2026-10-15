@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>{{ticket}} · Regresión BCP · {{date}}</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 16px; background: #f3f4f6; color: #1f2937;
+         font: 14px/1.5 "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .card { max-width: 760px; margin: 0 auto; background: #fff; border-radius: 12px;
+          box-shadow: 0 1px 3px rgba(0,0,0,.08); overflow: hidden; }
+  header { display: flex; justify-content: space-between; align-items: center; gap: 16px;
+           padding: 24px 28px; background: #0f2a4a; color: #fff; }
+  header h1 { margin: 0; font-size: 20px; font-weight: 600; }
+  header p { margin: 4px 0 0; color: #c7d2e0; font-size: 13px; }
+  .badge { padding: 6px 14px; border-radius: 999px; background: #16a34a; color: #fff;
+           font-weight: 600; font-size: 13px; white-space: nowrap; }
+  .data { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #e5e7eb;
+          border-bottom: 1px solid #e5e7eb; }
+  .data div { background: #fff; padding: 14px 20px; }
+  .data span { display: block; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  .data strong { font-size: 16px; font-variant-numeric: tabular-nums; }
+  section { padding: 20px 28px 8px; }
+  h2 { margin: 0 0 12px; font-size: 15px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; color: #6b7280; font-size: 12px; font-weight: 600; text-transform: uppercase;
+       letter-spacing: .04em; padding: 8px 10px; border-bottom: 2px solid #e5e7eb; }
+  td { padding: 12px 10px; border-bottom: 1px solid #f0f1f3; font-variant-numeric: tabular-nums; }
+  .ok { color: #16a34a; font-weight: 600; }
+  footer { padding: 16px 28px 24px; color: #6b7280; font-size: 12px; }
+  @media (max-width: 560px) { .data { grid-template-columns: 1fr; } header { flex-direction: column; align-items: flex-start; } }
+  @media print { body { background: #fff; padding: 0; } .card { box-shadow: none; border: 1px solid #e5e7eb; }
+                 header, .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <header>
+    <div>
+      <h1>Regresión BCP · {{ticket}}</h1>
+      <p>Consultar → pagar → anular → verificar que la deuda vuelve</p>
+    </div>
+    <div class="badge">✔ APROBADA</div>
+  </header>
+
+  <div class="data">
+    <div><span>Ambiente</span><strong>{{env}}</strong></div>
+    <div><span>Fecha (servidor)</span><strong>{{date}}</strong></div>
+    <div><span>Cliente (DNI)</span><strong>{{customerId}}</strong></div>
+    <div><span>Número de operación</span><strong>{{operationNumber}}</strong></div>
+    <div><span>Documento</span><strong>{{documentId}}</strong></div>
+    <div><span>Monto</span><strong>{{amount}}</strong></div>
+  </div>
+
+  <section>
+    <h2>Pasos</h2>
+    <table>
+      <thead><tr><th>#</th><th>Paso</th><th>Código</th><th>Resultado</th><th>Hora</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Consulta de deuda</td><td class="ok">{{inquiryCode}}</td><td>{{inquiryDescription}}</td><td>{{inquiryTime}}</td></tr>
+        <tr><td>2</td><td>Pago</td><td class="ok">{{paymentCode}}</td><td>{{paymentDescription}}</td><td>{{paymentTime}}</td></tr>
+        <tr><td>3</td><td>Anulación</td><td class="ok">{{annulmentCode}}</td><td>{{annulmentDescription}}</td><td>{{annulmentTime}}</td></tr>
+        <tr><td>4</td><td>Deuda restituida</td><td class="ok">{{restoredCode}}</td><td>Vuelve el documento {{documentId}}</td><td>{{restoredTime}}</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>Generado automáticamente por la regresión Karate de ihf-multi-channel-payments-api.</footer>
+</div>
+</body>
+</html>
