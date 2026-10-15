@@ -1,70 +1,48 @@
 function fn() {
   var env = karate.env || 'dev';
+
+  // Credenciales locales opcionales (ignoradas por git), con una sección por ambiente.
   var localConfig = {};
-  var environmentConfig = {};
-  var localConfigFile = new java.io.File('src/test/resources/karate-config-local.json');
-
-  if (localConfigFile.isFile()) {
-    var localConfigJson = new java.lang.String(
-      java.nio.file.Files.readAllBytes(localConfigFile.toPath()),
-      java.nio.charset.StandardCharsets.UTF_8
-    );
-    localConfig = JSON.parse(localConfigJson);
-    environmentConfig = localConfig[env] || {};
+  try {
+    localConfig = karate.read('classpath:karate-config-local.json') || {};
+  } catch (e) {
+    karate.log('karate-config-local.json no encontrado; se usan propiedades y variables de entorno');
   }
+  var environmentConfig = localConfig[env] || {};
 
+  // Orden de búsqueda: -D, variable de entorno, sección del ambiente en el archivo local.
   function valueOf(name) {
-    return karate.properties[name] || java.lang.System.getenv(name) ||
-      environmentConfig[name] || localConfig[name];
+    return karate.properties[name] || java.lang.System.getenv(name) || environmentConfig[name];
   }
 
-  function environmentBaseUrl() {
-    var environmentValue = valueOf('BCP_BASE_URL_' + env.toUpperCase());
-    return environmentValue || valueOf('API_BASE_URL');
+  var baseUrl = valueOf('API_BASE_URL');
+  var username = valueOf('PAGOS_USERNAME');
+  var password = valueOf('PAGOS_PASSWORD');
+  if (!baseUrl || !username || !password) {
+    karate.fail('Faltan API_BASE_URL, PAGOS_USERNAME o PAGOS_PASSWORD para el ambiente ' + env);
   }
-
-  var config = {
-    env: env,
-    baseUrl: environmentBaseUrl(),
-    bcpUsername: valueOf('PAGOS_USERNAME'),
-    bcpPassword: valueOf('PAGOS_PASSWORD'),
-    customerId: karate.properties['customerId'],
-    operationNumber: karate.properties['operationNumber'],
-    commonHeaders: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    debtRestorationRetry: { count: 12, interval: 5000 }
-  };
-
-  config.requireBcpConfiguration = function() {
-    if (!config.baseUrl) karate.fail('API_BASE_URL o BCP_BASE_URL_<AMBIENTE> es obligatorio');
-    if (!config.bcpUsername) karate.fail('PAGOS_USERNAME es obligatorio');
-    if (!config.bcpPassword) karate.fail('PAGOS_PASSWORD es obligatorio');
-  };
-
-  config.requireEightDigitValue = function(name, value) {
-    if (value == null || !/^\d{8}$/.test(String(value))) {
-      karate.fail(name + ' es obligatorio y debe contener exactamente 8 dígitos');
-    }
-    return String(value);
-  };
-
-  config.nowWithoutZone = function() {
-    var formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-    return java.time.LocalDateTime.now().format(formatter);
-  };
-
-  config.bcpAuthorization = function() {
-    var credentials = new java.lang.String(config.bcpUsername + ':' + config.bcpPassword);
-    return 'Basic ' + java.util.Base64.getEncoder().encodeToString(credentials.getBytes('UTF-8'));
-  };
-
-  config.bcpEndpoint = function(endpointPath) {
-    return config.baseUrl + (config.baseUrl.endsWith('/') ? '' : '/') + endpointPath;
-  };
-
-  config.waitForTransactionPersistence = function() {
-    java.lang.Thread.sleep(5000);
-  };
+  var credentials = new java.lang.String(username + ':' + password);
 
   karate.log('karate.env:', env);
-  return config;
+  return {
+    env: env,
+    customerId: valueOf('customerId'),
+    operationNumber: valueOf('operationNumber'),
+    apiUrl: baseUrl.replace(/\/+$/, ''),
+    apiAuthorization: 'Basic ' + java.util.Base64.getEncoder().encodeToString(credentials.getBytes('UTF-8')),
+    commonHeaders: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    paymentSettleMs: Number(valueOf('paymentSettleMs') || 20000),
+    debtRestorationRetry: { count: 12, interval: 5000 },
+
+    nowWithoutZone: function() {
+      var formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+      return java.time.LocalDateTime.now().format(formatter);
+    },
+
+    // 8 dígitos a partir de los segundos desde 1970: no se repite durante ~3 años.
+    newOperationNumber: function() {
+      var seconds = Math.floor(java.lang.System.currentTimeMillis() / 1000);
+      return String(100000000 + seconds % 100000000).substring(1);
+    }
+  };
 }

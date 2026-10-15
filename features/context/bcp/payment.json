@@ -1,6 +1,6 @@
 {
-  "rqUUID": "#(rqUUID)",
-  "operationDate": "#(operationDate)",
+  "rqUUID": "#(karate.uuid())",
+  "operationDate": "#(nowWithoutZone())",
   "operationNumber": "#(operationNumber)",
   "financialEntity": "002",
   "channel": "IB",

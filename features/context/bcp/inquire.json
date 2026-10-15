@@ -1,5 +1,5 @@
 {
-  "rqUUID": "#(rqUUID)",
+  "rqUUID": "#(karate.uuid())",
   "customerId": "#(customerId)",
   "serviceId": "N001"
 }

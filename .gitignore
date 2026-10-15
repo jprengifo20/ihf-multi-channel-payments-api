@@ -1,2 +1,20 @@
+### Credenciales locales ###
 /src/test/resources/karate-config-local.json
 /.local/
+
+### Maven / reportes ###
+/target/
+
+### IA (configuración local) ###
+.claude/
+
+### IDEs ###
+.idea/
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+### SO ###
+.DS_Store
+Thumbs.db

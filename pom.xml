@@ -47,8 +47,9 @@
       "coordenadas": la dirección única de un proyecto o librería en Maven.
     -->
 
-    <!-- groupId: organización o grupo dueño del proyecto. -->
-    <groupId>com.example</groupId>
+    <!-- groupId: organización o grupo dueño del proyecto. Por convención es
+         el dominio de la empresa al revés (oka.com.pe => pe.com.oka). -->
+    <groupId>pe.com.oka</groupId>
 
     <!-- artifactId: nombre del proyecto. Un artefacto es el archivo que Maven
          genera o descarga, normalmente un .jar (código Java empaquetado). -->
@@ -105,8 +106,8 @@
         <!-- JUNIT 5 (junit-jupiter): framework de pruebas para Java. Descubre
              y ejecuta los métodos marcados con @Test, y aporta las aserciones
              (assertTrue, assertEquals) para validar resultados. Aquí actúa
-             como el arranque JUnit 5 de BcpFinancialApiTest, que a su vez
-             lanza el flujo Karate de pagos BCP. -->
+             como el arranque JUnit 5 de PaymentsTest, que a su vez
+             lanza los features de Karate. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -116,46 +117,46 @@
 
     </dependencies>
 
+
     <!--
       ==========================================================================
       BUILD (CONSTRUCCIÓN)
       ==========================================================================
       Configura cómo Maven construye y ejecuta el proyecto. Las tareas las
-      hacen los plugins (extensiones de Maven). Por ejemplo, Surefire es el
-      plugin que lanza las pruebas cuando corres mvn test; ya viene incluido
-      por defecto y por eso no hace falta declararlo.
+      hacen los plugins (extensiones de Maven).
+      Classpath: lista de carpetas donde Java busca clases y recursos al
+      ejecutarse. Cuando Karate usa classpath:features, busca esa carpeta
+      dentro de esa lista.
     -->
     <build>
 
-        <!--
-          testResources: carpetas con archivos de apoyo para las pruebas que
-          no son código Java (por ejemplo .feature, JSON, CSV). Maven los
-          copia al classpath de pruebas.
-          Classpath: lista de carpetas donde Java busca clases y recursos al
-          ejecutarse. Cuando Karate usa classpath:examples, busca la carpeta
-          examples dentro de esa lista.
-          Importante: al definir testResources se reemplaza la configuración
-          por defecto de Maven, por eso se declaran las dos carpetas.
-        -->
+        <!-- RECURSOS DE PRUEBA: archivos que Maven copia al classpath.
+             - src/test/resources: configuración (karate-config.js), en la
+               raíz del classpath, donde Karate la busca.
+             - features: pruebas y datos, como en los repos -qa. Se copian
+               bajo classpath:features (targetPath). -->
         <testResources>
-
-            <!-- Carpeta src/test/java: mantiene los recursos de prueba
-                 complementarios, excluyendo los .java, que Maven ya compila
-                 por separado. -->
-            <testResource>
-                <directory>src/test/java</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-
-            <!-- Carpeta src/test/resources: ubicación estándar de recursos de
-                 prueba (datos JSON, CSV, karate-config.js, etc.). -->
             <testResource>
                 <directory>src/test/resources</directory>
             </testResource>
-
+            <testResource>
+                <directory>features</directory>
+                <targetPath>features</targetPath>
+            </testResource>
         </testResources>
 
+        <plugins>
+
+            <!-- SUREFIRE: plugin que lanza las pruebas cuando corres mvn test.
+                 Maven lo incluye por defecto, pero su versión depende de la
+                 versión de Maven instalada y las antiguas no detectan pruebas
+                 JUnit 5. Fijarla hace que el resultado sea igual para todos. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+            </plugin>
+
+        </plugins>
     </build>
 </project>
